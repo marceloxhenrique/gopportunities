@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ShowOpeningHanlder(ctx * gin.Context){
+func ShowOpeningHanlder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
-				"message":"GET Opening",
-			})
+		"message": "GET Opening",
+	})
 }

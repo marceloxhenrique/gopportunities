@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateOpeningHanlder(ctx * gin.Context){
+func CreateOpeningHanlder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
-				"message":"POST Opening",
-			})
+		"message": "POST Opening",
+	})
 }
