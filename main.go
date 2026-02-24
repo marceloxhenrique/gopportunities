@@ -1,12 +1,12 @@
 package main
 
 import (
-	"gopportunites/config"
-	"gopportunites/router"
+	"github.com/marceloxhenrique/gopportunities/config"
+	"github.com/marceloxhenrique/gopportunities/router"
 )
 
 var (
-// logger *config.Logger
+	logger *config.Logger
 )
 
 func main() {
