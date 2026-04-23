@@ -17,9 +17,9 @@ import (
 // @Success 200 {object} ListOpeningResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /openings [get]
-func ListOpeningsHandler(ctx *gin.Context) {
+func (h *Handler) ListOpeningsHandler(ctx *gin.Context) {
 	openings := []schemas.Opening{}
-	if err := db.Find(&openings).Error; err != nil {
+	if err := h.db.Find(&openings).Error; err != nil {
 		sendError(ctx, http.StatusInternalServerError, "error listing openings")
 		return
 	}

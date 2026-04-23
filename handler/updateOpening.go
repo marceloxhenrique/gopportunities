@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/bytedance/gopkg/util/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/marceloxhenrique/gopportunities/schemas"
 )
@@ -22,7 +23,7 @@ import (
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /opening [put]
-func UpdateOpeningHandler(ctx *gin.Context) {
+func (h *Handler) UpdateOpeningHandler(ctx *gin.Context) {
 	request := UpdateOpeningRequest{}
 	ctx.BindJSON(&request)
 	if err := request.Validate(); err != nil {
@@ -37,7 +38,7 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 	}
 	opening := schemas.Opening{}
 
-	if err := db.First(&opening, id).Error; err != nil {
+	if err := h.db.First(&opening, id).Error; err != nil {
 		sendError(ctx, http.StatusNotFound, fmt.Sprintf("opening with id: %v not found", id))
 		return
 	}
@@ -66,7 +67,7 @@ func UpdateOpeningHandler(ctx *gin.Context) {
 		opening.Salary = request.Salary
 	}
 
-	if err := db.Save(&opening).Error; err != nil {
+	if err := h.db.Save(&opening).Error; err != nil {
 		logger.Errorf("error updating opening: %v", err.Error())
 		sendError(ctx, http.StatusInternalServerError, "error updating opening")
 		return
