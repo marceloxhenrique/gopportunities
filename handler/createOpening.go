@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/bytedance/gopkg/util/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/marceloxhenrique/gopportunities/schemas"
 )
@@ -19,7 +20,7 @@ import (
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /opening [post]
-func CreateOpeningHandler(ctx *gin.Context) {
+func (h *Handler) CreateOpeningHandler(ctx *gin.Context) {
 	request := CreateOpeningRequest{}
 
 	ctx.BindJSON(&request)
@@ -38,7 +39,7 @@ func CreateOpeningHandler(ctx *gin.Context) {
 		Salary:   request.Salary,
 	}
 
-	if err := db.Create(&opening).Error; err != nil {
+	if err := h.db.Create(&opening); err != nil {
 		logger.Errorf("error creating opening: %v", err.Error())
 		sendError(ctx, http.StatusInternalServerError, "error creating opening on database")
 		return
