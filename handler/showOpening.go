@@ -2,9 +2,9 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/marceloxhenrique/gopportunities/schemas"
 )
 
 //@BasePath /api/v1
@@ -20,13 +20,19 @@ import (
 // @Failure 404 {object} ErrorResponse
 // @Router /opening [get]
 func (h *Handler) ShowOpeningHandler(ctx *gin.Context) {
-	id := ctx.Query("id")
-	if id == "" {
+	idParam := ctx.Query("id")
+	if idParam == "" {
 		sendError(ctx, http.StatusBadRequest, errParamIsRequired("id", "queryParameter").Error())
 		return
 	}
-	opening := schemas.Opening{}
-	if err := h.db.First(&opening, id).Error; err != nil {
+	idUint64, err := strconv.ParseUint(idParam, 10, 64)
+	if err != nil {
+		sendError(ctx, http.StatusBadRequest, "invalid id")
+		return
+	}
+
+	opening, err := h.db.GetById(uint(idUint64))
+	if err != nil {
 		sendError(ctx, http.StatusNotFound, "opening with not found")
 		return
 	}

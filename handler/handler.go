@@ -2,17 +2,17 @@ package handler
 
 import (
 	"github.com/marceloxhenrique/gopportunities/config"
-	"gorm.io/gorm"
+	"github.com/marceloxhenrique/gopportunities/repository"
 )
 
 type Handler struct {
 	logger *config.Logger
-	db     *gorm.DB
+	db     repository.OpeningRepository
 }
 
-func NewHandler(db *gorm.DB) *Handler {
+func NewHandler(repo repository.OpeningRepository) *Handler {
 	return &Handler{
-		db:     db,
+		db:     repo,
 		logger: config.GetLogger("handler"),
 	}
 }

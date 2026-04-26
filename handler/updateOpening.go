@@ -3,10 +3,10 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/bytedance/gopkg/util/logger"
 	"github.com/gin-gonic/gin"
-	"github.com/marceloxhenrique/gopportunities/schemas"
 )
 
 //@BasePath /api/v1
@@ -36,9 +36,14 @@ func (h *Handler) UpdateOpeningHandler(ctx *gin.Context) {
 		sendError(ctx, http.StatusBadRequest, errParamIsRequired("id", "queryParameter").Error())
 		return
 	}
-	opening := schemas.Opening{}
 
-	if err := h.db.First(&opening, id).Error; err != nil {
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		sendError(ctx, http.StatusBadRequest, "invalid id")
+		return
+	}
+	opening, err := h.db.GetById(uint(idUint64))
+	if err != nil {
 		sendError(ctx, http.StatusNotFound, fmt.Sprintf("opening with id: %v not found", id))
 		return
 	}
@@ -67,11 +72,12 @@ func (h *Handler) UpdateOpeningHandler(ctx *gin.Context) {
 		opening.Salary = request.Salary
 	}
 
-	if err := h.db.Save(&opening).Error; err != nil {
+	updatedOpening, err := h.db.Update(opening)
+	if err != nil {
 		logger.Errorf("error updating opening: %v", err.Error())
 		sendError(ctx, http.StatusInternalServerError, "error updating opening")
 		return
 	}
-	sendSuccess(ctx, "update-opening", opening)
+	sendSuccess(ctx, "update-opening", updatedOpening)
 
 }

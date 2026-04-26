@@ -5,14 +5,15 @@ import (
 	"github.com/marceloxhenrique/gopportunities/config"
 	"github.com/marceloxhenrique/gopportunities/docs"
 	"github.com/marceloxhenrique/gopportunities/handler"
+	"github.com/marceloxhenrique/gopportunities/repository"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func initializeRoutes(router *gin.Engine) {
-	// handler.InitializeHandler()
 	db := config.GetSQLite()
-	h := handler.NewHandler(db)
+	repo := repository.NewGormOpenRepository(db)
+	h := handler.NewHandler(repo)
 	basePath := "/api/v1"
 	docs.SwaggerInfo.BasePath = basePath
 	v1 := router.Group(basePath)

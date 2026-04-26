@@ -3,9 +3,9 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/marceloxhenrique/gopportunities/schemas"
 )
 
 //@BasePath /api/v1
@@ -21,19 +21,24 @@ import (
 // @Failure 404 {object} ErrorResponse
 // @Router /opening [delete]
 func (h *Handler) DeleteOpeningHandler(ctx *gin.Context) {
-	id := ctx.Query("id")
-	if id == "" {
+	idParam := ctx.Query("id")
+	if idParam == "" {
 		sendError(ctx, http.StatusBadRequest, errParamIsRequired("id", "queryParameter").Error())
 		return
 	}
-	opening := schemas.Opening{}
-
-	if err := h.db.First(&opening, id).Error; err != nil {
-		sendError(ctx, http.StatusNotFound, fmt.Sprintf("opening with id: %v not found", id))
+	idUint64, err := strconv.ParseUint(idParam, 10, 64)
+	if err != nil {
+		sendError(ctx, http.StatusBadRequest, "invalid id")
 		return
 	}
-	if err := h.db.Delete(&opening).Error; err != nil {
-		sendError(ctx, http.StatusInternalServerError, fmt.Sprintf("error deleting opening with id: %s", id))
+	opening, err := h.db.GetById(uint(idUint64))
+	if err != nil {
+		sendError(ctx, http.StatusNotFound, fmt.Sprintf("opening with id: %v not found", idParam))
+		return
+	}
+
+	if err := h.db.Delete(uint(idUint64)); err != nil {
+		sendError(ctx, http.StatusInternalServerError, fmt.Sprintf("error deleting opening with id: %s", idParam))
 		return
 	}
 	sendSuccess(ctx, "deleting-opening", opening)

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/marceloxhenrique/gopportunities/schemas"
 )
 
 //@BasePath /api/v1
@@ -18,8 +17,8 @@ import (
 // @Failure 500 {object} ErrorResponse
 // @Router /openings [get]
 func (h *Handler) ListOpeningsHandler(ctx *gin.Context) {
-	openings := []schemas.Opening{}
-	if err := h.db.Find(&openings).Error; err != nil {
+	openings, err := h.db.List()
+	if err != nil {
 		sendError(ctx, http.StatusInternalServerError, "error listing openings")
 		return
 	}
