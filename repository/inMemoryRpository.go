@@ -38,5 +38,9 @@ func (r *InMemoryOpeningRepository) Update(opening *schemas.Opening) (*schemas.O
 	return nil, nil
 }
 func (r *InMemoryOpeningRepository) Delete(id uint) error {
+	if _, ok := r.Data[id]; !ok {
+		return errors.New("not found")
+	}
+	delete(r.Data, id)
 	return nil
 }
