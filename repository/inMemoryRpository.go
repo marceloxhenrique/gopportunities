@@ -32,7 +32,11 @@ func (r *InMemoryOpeningRepository) GetById(id uint) (*schemas.Opening, error) {
 }
 
 func (r *InMemoryOpeningRepository) List() ([]schemas.Opening, error) {
-	return nil, nil
+	var newList []schemas.Opening
+	for _, i := range r.Data {
+		newList = append(newList, *i)
+	}
+	return newList, nil
 }
 func (r *InMemoryOpeningRepository) Update(opening *schemas.Opening) (*schemas.Opening, error) {
 	return nil, nil
