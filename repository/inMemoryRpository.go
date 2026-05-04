@@ -39,7 +39,14 @@ func (r *InMemoryOpeningRepository) List() ([]schemas.Opening, error) {
 	return newList, nil
 }
 func (r *InMemoryOpeningRepository) Update(opening *schemas.Opening) (*schemas.Opening, error) {
-	return nil, nil
+
+	data := r.Data[opening.ID]
+	if data == nil {
+		return nil, errors.New("Id not found")
+	}
+	r.Data[opening.ID] = opening
+	return r.Data[opening.ID], nil
+
 }
 func (r *InMemoryOpeningRepository) Delete(id uint) error {
 	if _, ok := r.Data[id]; !ok {
