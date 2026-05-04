@@ -10,7 +10,7 @@ import (
 	"github.com/marceloxhenrique/gopportunities/repository"
 )
 
-func TestCreateOpeningHandler_Router(t *testing.T) {
+func TestCreateOpening(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	repo := repository.NewInMemoryRepository()
